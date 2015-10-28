@@ -1,4 +1,3 @@
-import java.util.Scanner;
 /**
  * This computes the minimum edit distance and gives feedback about the edits of two strings.
  * It is a very basic algorithm using Levenshtein's method of equating substitution of characters
@@ -45,17 +44,5 @@ public class EditDistance
         }
         
         return table[table.length - 1][table[0].length - 1];
-    }
-
-    public static void main(String[] args)
-    {
-        Scanner input = new Scanner(System.in);
-        System.out.println("First string: ");
-        String a = input.nextLine();
-        System.out.println("Second string: ");
-        String b = input.nextLine();
-
-        EditDistance minED = new EditDistance(a, b);
-        System.out.println("Minimum number of edits: " + minED.computeDistance());
     }
 }
