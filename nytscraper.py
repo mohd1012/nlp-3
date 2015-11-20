@@ -2,7 +2,11 @@ from nytimesarticle import articleAPI
 import time
 
 def main():
+<<<<<<< HEAD:nytscraper.py
 	headlines_wordcounts = get_range_headlines_and_wordcount(1980, 1980)
+=======
+	print get_range_headlines_and_wordcount(1980, 1980)
+>>>>>>> a5aecdd20ecb0d809f3898b61b49244d5048c342:nytimes.py
 
 def get_range_headlines_and_wordcount(start, end):
 	'''
