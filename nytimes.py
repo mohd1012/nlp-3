@@ -4,8 +4,6 @@ import time
 def main():
 	print get_range_headlines_and_wordcount(1980, 1980)
 
-def 
-
 def get_range_headlines_and_wordcount(start, end):
 	'''
 	Returns a tuple of a dictionary mapping a year to all headlines from that year
