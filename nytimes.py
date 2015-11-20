@@ -6,7 +6,8 @@ def main():
 
 def get_range_headlines_and_wordcount(start, end):
 	'''
-	Returns a dictionary mapping a year to all headlines from that year
+	Returns a tuple of a dictionary mapping a year to all headlines from that year
+	and a second mapping year to average wordcount
 	for all years from start to end (dates)
 	'''
 	headlines = list()
@@ -22,6 +23,10 @@ def get_range_headlines_and_wordcount(start, end):
 	return (avg_wordcounts, headlines)
 
 def parse_wordcount(articles):
+	'''
+	Parses query result for word count from each article
+	Returns a list of word counts
+	'''
 	wordcounts = list()
 	for i in articles['response']['docs']:
 		wordcounts.append(i['word_count'])
@@ -40,9 +45,10 @@ def parse_headlines(articles):
 def get_headlines_and_wordcount(date):
     '''
     This function accepts a year in string format (e.g.'1980')
-    and it will return a list of headlines
+    and it will return a tuple of average wordcount and a list headlines
     for that year.
     '''
+    #please dont use my key :)
     api = articleAPI('fad6d61d6d69a16df4ef1e0f38ec9c00:10:73444277')
     headlines = []
     wordcounts = []
