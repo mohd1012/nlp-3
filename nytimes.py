@@ -4,10 +4,12 @@ import time
 def main():
 	print get_range_headlines_and_wordcount(1980, 1980)
 
+def 
+
 def get_range_headlines_and_wordcount(start, end):
 	'''
 	Returns a tuple of a dictionary mapping a year to all headlines from that year
-	and a second mapping year to average wordcount
+	and a second dictionary mapping year to average wordcount
 	for all years from start to end (dates)
 	'''
 	headlines = list()
