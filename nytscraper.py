@@ -2,9 +2,7 @@ from nytimesarticle import articleAPI
 import time
 
 def main():
-	print get_range_headlines_and_wordcount(1980, 1980)
-
-def 
+	headlines_wordcounts = get_range_headlines_and_wordcount(1980, 1980)
 
 def get_range_headlines_and_wordcount(start, end):
 	'''
