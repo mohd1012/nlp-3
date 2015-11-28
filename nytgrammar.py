@@ -1,12 +1,106 @@
 import nltk
+#import re
+import xlwt
+from nytdata3 import Data
 
 def main():
-	print(classify("""china standing firm amid growing crises; 
-		appears to have decided to deal with hanoi and the kremlin by 
-		mobilizing world opinion topics for brown's visit communist 
-		editors said to flee"""))
+	book = xlwt.Workbook(encoding="utf-8")
+	sheet1 = book.add_sheet("Sheet 1")
+	sheet1.write(0, 0, "Year")
+	sheet1.write(0, 1, "Average Wordcount")
+	sheet1.write(0, 2, "Average Headline Relevance to Content")
 
-def classify(txt):
+	d = Data()
+	avg_wordcounts = d.article_data[0]
+	headlines = d.article_data[1]
+
+	i = 1
+	for year in avg_wordcounts:
+		print(year)
+		sheet1.write(i, 0, year)
+		sheet1.write(i, 1, avg_wordcounts[year])
+		avg_rel = avg_relevance(headlines[year])
+		sheet1.write(i, 2, avg_rel)
+		i += 1
+
+	book.save("NYT_data4.xls")
+
+def avg_relevance(headlines):
+	avg_rel = 0
+	for headline, abstract in headlines:
+		avg_rel += determine_relevance(headline, abstract)
+
+	return avg_rel / len(headlines)
+
+def determine_relevance(headline, abstract):
+	noun_types = ('NN', 'NNS', 'NNP', 'DT', 'POS', 'IN')
+	#list of tuples with (topic, importance of presence)
+	topics = list()
+	noun_phrase = list()
+	headline_pos = classify_pos(headline)
+	headline_lower_pos = dict(classify_pos(headline.lower()))
+	for (w, pos) in headline_pos:
+		#print(w, pos)
+		#print(classify_pos(w.lower()))
+		try:
+			w_lower = headline_lower_pos[w.lower()]
+		except:
+			w_lower = classify_pos(w)
+		if pos == "NNP" and w_lower in noun_types:
+			#verbs sometimes mis-classified to proper nouns
+			#because of headline capitalization
+			topics.append((w, 1))
+
+		elif pos in noun_types and w_lower in noun_types:
+			noun_phrase.append((w, pos))
+		else:
+			#not a noun
+			if len(noun_phrase) > 2:
+				phrase_str = ""
+				for n, pos in noun_phrase:
+					if pos == "POS":
+						phrase_str = phrase_str[:-1]
+					phrase_str += str(n + " ")
+				phrase_str = phrase_str[:-1]
+				topics.append((phrase_str, 0.5))
+			noun_phrase = list()
+	#abstract_len = len(re.findall(r'\w+', abstract))
+	relevance = 0
+	if len(abstract) != 0:
+		for t, i in topics:
+			occurrences = count_word(abstract, t)
+			relevance += (occurrences / (len(topics) * i))
+
+	return relevance
+
+
+
+def count_word(text, word):
+	occurrences = 0
+	start = 0
+	index = word_index(text, word, start)
+	while index != -1:
+		occurrences += 1
+		start = index + len(word)
+		index = word_index(text, word, start)
+	return occurrences
+
+def word_index(text, word, start):
+	w = 0
+	endings = [" ", ".", "-", ","]
+	for t in range(start, len(text)):
+		if text[t] == word[w]:
+			if w == len(word) - 1 and (t == len(text) - 1 or t - w == 0 or (text[t - w - 1] in endings and text[t + 1] in endings)):
+				return t - w
+			elif w == len(word) - 1:
+				w = 0
+			else:
+				w += 1
+		else:
+			w = 0
+	return -1
+
+def classify_pos(txt):
 	"""
 		PENN TREEBANK PART OF SPEECH TAG
 		1.	CC	Coordinating conjunction
